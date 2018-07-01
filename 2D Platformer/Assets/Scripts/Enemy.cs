@@ -24,11 +24,14 @@ public class Enemy : MonoBehaviour
 		// Setting up the references.
 		ren = transform.Find("body").GetComponent<SpriteRenderer>();
 		frontCheck = transform.Find("frontCheck").transform;
-		score = GameObject.Find("Score").GetComponent<Score>();
+		//score = GameObject.Find("Score").GetComponent<Score>();
 	}
 
 	void FixedUpdate ()
 	{
+		if(transform.position.y < -20) {
+			Destroy(gameObject);
+		}
 		// Create an array of all the colliders in front of the enemy.
 		Collider2D[] frontHits = Physics2D.OverlapPointAll(frontCheck.position, 1);
 
@@ -63,6 +66,8 @@ public class Enemy : MonoBehaviour
 		// Reduce the number of hit points by one.
 		HP--;
 	}
+
+	
 	
 	void Death()
 	{
@@ -80,7 +85,7 @@ public class Enemy : MonoBehaviour
 		ren.sprite = deadEnemy;
 
 		// Increase the score by 100 points
-		score.score += 100;
+		//score.score += 100;
 
 		// Set dead to true.
 		dead = true;
@@ -101,11 +106,11 @@ public class Enemy : MonoBehaviour
 
 		// Create a vector that is just above the enemy.
 		Vector3 scorePos;
-		scorePos = transform.position;
-		scorePos.y += 1.5f;
+		//scorePos = transform.position;
+		//scorePos.y += 1.5f;
 
 		// Instantiate the 100 points prefab at this point.
-		Instantiate(hundredPointsUI, scorePos, Quaternion.identity);
+		//Instantiate(hundredPointsUI, scorePos, Quaternion.identity);
 	}
 
 

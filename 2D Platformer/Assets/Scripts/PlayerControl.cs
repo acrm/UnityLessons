@@ -8,6 +8,8 @@ public class PlayerControl : MonoBehaviour
 	[HideInInspector]
 	public bool jump = false;				// Condition for whether the player should jump.
 
+	public Rigidbody2D fireball;				// Prefab of the rocket.
+	public float shotSpeed = 20f;				// The speed the rocket will fire at.
 
 	public float moveForce = 365f;			// Amount of force added to move the player left and right.
 	public float maxSpeed = 16f;			// The fastest the player can travel in the x axis.
@@ -35,21 +37,49 @@ public class PlayerControl : MonoBehaviour
 	void Update()
 	{
 		// The player is grounded if a linecast to the groundcheck position hits anything on the ground layer.
-		grounded = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));  
+		//zgrounded = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));  
 
 		// If the jump button is pressed and the player is grounded then the player should jump.
-		if(Input.GetButtonDown("Jump") && grounded)
-			jump = true;
+		//if(Input.GetButtonDown("Jump") && grounded)
+		//	jump = true;
+
+		// If the fire button is pressed...
+		if(Input.GetButtonDown("Fire1"))
+		{
+			Debug.Log("Shoot");
+			// ... set the animator Shoot trigger parameter and play the audioclip.
+			anim.SetTrigger("Shoot");
+			//GetComponent<AudioSource>().Play();
+
+			// If the player is facing right...
+			if(facingRight)
+			{
+				// ... instantiate the rocket facing right and set it's velocity to the right. 
+				Rigidbody2D fireballInstance = Instantiate(fireball, transform.position, Quaternion.Euler(new Vector3(0,0,0))) as Rigidbody2D;
+				fireballInstance.velocity = new Vector2(shotSpeed, 0);
+			}
+			else
+			{
+				// Otherwise instantiate the rocket facing left and set it's velocity to the left.
+				Rigidbody2D fireballInstance = Instantiate(fireball, transform.position, Quaternion.Euler(new Vector3(0,0,180f))) as Rigidbody2D;
+				fireballInstance.velocity = new Vector2(-shotSpeed, 0);
+			}
+		}
 	}
 
 
 	void FixedUpdate ()
 	{
+
 		// Cache the horizontal input.
 		float h = Input.GetAxis("Horizontal");
+		float v = Input.GetAxis("Vertical");
+		float VForce = v * moveForce/5f;
+		Debug.Log("Bill position: " + transform.position);
+		GetComponent<Rigidbody2D>().AddForce(Vector2.up * VForce);
 
 		// The Speed animator parameter is set to the absolute value of the horizontal input.
-		anim.SetFloat("Speed", Mathf.Abs(h));
+		//anim.SetFloat("Speed", Mathf.Abs(h));
 
 		// If the player is changing direction (h has a different sign to velocity.x) or hasn't reached maxSpeed yet...
 		if(h * GetComponent<Rigidbody2D>().velocity.x < maxSpeed)

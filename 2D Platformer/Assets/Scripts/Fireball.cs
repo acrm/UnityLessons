@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Rocket : MonoBehaviour 
+public class Fireball : MonoBehaviour 
 {
 	public GameObject explosion;		// Prefab of explosion effect.
 
